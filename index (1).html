@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#171923">
+  <title>CBJA | Registro de Atividades</title>
+  <style>
+    :root{color-scheme:dark;--bg:#11131b;--panel:#191c28;--panel2:#222637;--line:#30364a;--text:#f3f5ff;--muted:#aab1c5;--accent:#8797ff}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+    header{padding:28px max(20px,calc((100% - 1080px)/2));background:linear-gradient(120deg,#20263b,#171923);border-bottom:1px solid var(--line)}
+    .brand{display:flex;gap:14px;align-items:center}.logo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#343d62;font-size:24px}
+    h1{font-size:clamp(22px,4vw,30px);margin:0}header p{margin:4px 0 0;color:var(--muted)}
+    main{max-width:1080px;margin:24px auto;padding:0 18px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}.stat-label{color:var(--muted);font-size:13px}.stat-value{font-size:26px;font-weight:750;margin-top:3px}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 14px}.toolbar input,.toolbar select{background:var(--panel);color:var(--text);border:1px solid var(--line);padding:12px 13px;border-radius:10px;min-width:160px;flex:1}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 12px}.section-head h2{font-size:19px;margin:0}
+    #status{color:var(--muted);font-size:13px}.activity{display:grid;grid-template-columns:42px 1fr;gap:13px;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+    .activity-icon{width:42px;height:42px;border-radius:12px;background:#29304a;display:grid;place-items:center;font-size:19px}
+    .activity h3{font-size:15px;margin:0 0 5px}.meta{color:var(--muted);font-size:13px}.details{display:flex;gap:8px 16px;flex-wrap:wrap;margin-top:8px;font-size:13px}
+    .tag{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 9px;color:#d7dcf1;font-size:12px}
+    .empty{padding:32px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:14px}
+    footer{max-width:1080px;margin:28px auto;padding:0 18px 30px;color:var(--muted);font-size:12px}
+    @media(max-width:600px){.stats{grid-template-columns:1fr}.stat-value{font-size:23px}.section-head{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">🛡️</div><div><h1>CBJA — Registro de Atividades</h1><p>Histórico de atividades do servidor Discord</p></div></div></header>
+<main>
+  <section class="stats">
+    <div class="card"><div class="stat-label">Atividades exibidas</div><div class="stat-value" id="total">—</div></div>
+    <div class="card"><div class="stat-label">Promoções</div><div class="stat-value" id="promotions">—</div></div>
+    <div class="card"><div class="stat-label">Última atualização</div><div class="stat-value" style="font-size:16px" id="updated">Carregando…</div></div>
+  </section>
+  <div class="toolbar">
+    <input id="search" placeholder="Pesquisar membro ou responsável…" aria-label="Pesquisar">
+    <select id="type" aria-label="Filtrar por atividade"><option value="">Todas as atividades</option><option>Promoção</option><option>Exoneração</option><option>Advertência</option><option>Transferência</option><option>Outro</option></select>
+    <select id="channel" aria-label="Filtrar por canal"><option value="">Todos os canais</option></select>
+  </div>
+  <div class="section-head"><h2>Histórico de registros</h2><span id="status">Conectando ao sistema…</span></div>
+  <section id="list"><div class="empty">Carregando registros…</div></section>
+</main>
+<footer>CBJA • Os registros são fornecidos pela integração do servidor Discord. Informações de demonstração não representam atividades reais.</footer>
+<script>
+const demo = [
+ {id:"demo-1",type:"Promoção",member:"@Membro de exemplo",responsible:"@Administrador",oldRole:"Soldado",newRole:"Cabo",channel:"registros-de-promocao",createdAt:new Date().toISOString(),note:"Registro ilustrativo"},
+ {id:"demo-2",type:"Transferência",member:"@Outro membro",responsible:"@Direção",oldRole:"Setor A",newRole:"Setor B",channel:"registros-gerais",createdAt:new Date(Date.now()-86400000).toISOString(),note:"Registro ilustrativo"}
+];
+let records=[];
+const $=id=>document.getElementById(id);
+function date(v){const d=new Date(v);return isNaN(d)? "Data não informada":d.toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"});}
+function icon(type){return ({Promoção:"⬆️",Exoneração:"👤",Advertência:"⚠️",Transferência:"↔️",Outro:"📋"})[type]||"📋";}
+function render(){
+ const term=$("search").value.toLocaleLowerCase("pt-BR"), type=$("type").value, channel=$("channel").value;
+ const rows=records.filter(r=>(!type||r.type===type)&&(!channel||r.channel===channel)&&[r.member,r.responsible,r.type,r.oldRole,r.newRole,r.note].join(" ").toLocaleLowerCase("pt-BR").includes(term));
+ $("total").textContent=rows.length;
+ $("promotions").textContent=rows.filter(r=>r.type==="Promoção").length;
+ $("updated").textContent=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+ const channels=[...new Set(records.map(r=>r.channel).filter(Boolean))].sort();
+ const current=$("channel").value;
+ $("channel").innerHTML='<option value="">Todos os canais</option>'+channels.map(c=>`<option value="${esc(c)}">${esc("#"+c)}</option>`).join("");
+ $("channel").value=channels.includes(current)?current:"";
+ $("list").innerHTML=rows.length?rows.map(r=>`<article class="activity"><div class="activity-icon">${icon(r.type)}</div><div><h3>${esc(r.type||"Atividade")} — ${esc(r.member||"Membro não informado")}</h3><div class="meta">${esc(date(r.createdAt))} · Responsável: ${esc(r.responsible||"Não informado")}</div><div class="details">${r.oldRole?`<span class="tag">Anterior: ${esc(r.oldRole)}</span>`:""}${r.newRole?`<span class="tag">Novo: ${esc(r.newRole)}</span>`:""}${r.channel?`<span class="tag">#${esc(r.channel)}</span>`:""}</div>${r.note?`<div class="meta" style="margin-top:8px">${esc(r.note)}</div>`:""}</div></article>`).join(""):'<div class="empty">Nenhum registro encontrado.</div>';
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+async function load(){
+ try{
+  const res=await fetch("/api/activities");
+  if(!res.ok) throw new Error("API indisponível");
+  const data=await res.json(); records=Array.isArray(data.activities)?data.activities:[];
+  $("status").textContent="Conectado · dados do servidor";
+ }catch(e){records=demo;$("status").textContent="Modo de demonstração · configure o Netlify para conectar";}
+ render();
+}
+["search","type","channel"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",render));
+load();
+</script>
+</body>
+</html>
