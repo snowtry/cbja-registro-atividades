@@ -25,7 +25,7 @@ export default async (request) => {
       );
     }
 
-    if (request.method !== "POST") {
+    if (!["POST", "DELETE"].includes(request.method)) {
       return Response.json(
         { error: "Método não permitido." },
         { status: 405, headers }
@@ -51,7 +51,17 @@ export default async (request) => {
       );
     }
 
+    if (request.method === "DELETE") {
+      await store.setJSON("activities", []);
+
+      return Response.json(
+        { success: true, message: "Histórico limpo." },
+        { headers }
+      );
+    }
+
     const body = await request.json();
+
     const allowed = [
       "Promoção",
       "Exoneração",
@@ -106,4 +116,3 @@ export default async (request) => {
     );
   }
 };
-  
