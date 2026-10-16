@@ -203,6 +203,17 @@
       overflow-wrap: anywhere;
     }
 
+    .profile-link {
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .profile-link:hover {
+      text-decoration: underline;
+    }
+
     .meta {
       color: var(--muted);
       font-size: 13px;
@@ -280,11 +291,13 @@
       .stat-value { font-size: 24px; }
       .section-head { align-items: flex-start; flex-direction: column; }
       .toolbar input, .toolbar select { min-width: 100%; }
+
       .activity {
         padding: 13px;
         gap: 10px;
         grid-template-columns: 40px minmax(0, 1fr);
       }
+
       .activity-icon { width: 40px; height: 40px; }
     }
   </style>
@@ -465,7 +478,7 @@ function render() {
     (!type || r.type === type) &&
     (!channel || r.channel === channel) &&
     [
-      r.member, r.responsible, r.type,
+      r.member, r.memberID, r.responsible, r.type,
       r.oldRole, r.newRole, r.note, r.channel
     ].join(" ").toLocaleLowerCase("pt-BR").includes(term)
   );
@@ -498,7 +511,20 @@ function render() {
       <article class="activity">
         <div class="activity-icon">${svg(iconName(r.type))}</div>
         <div>
-          <h3>${esc(r.type || "Atividade")} — ${esc(r.member || "Membro não informado")}</h3>
+          <h3>
+            ${esc(r.type || "Atividade")} —
+            ${esc(r.member || "Membro não informado")}
+          </h3>
+
+          ${r.memberID && /^\d{17,20}$/.test(String(r.memberID))
+            ? `<div class="meta" style="margin-bottom:5px">
+                ${svg("user")}
+                <a class="profile-link"
+                   href="https://discord.com/users/${encodeURIComponent(r.memberID)}"
+                   target="_blank"
+                   rel="noopener noreferrer">Ver perfil do usuário que recebeu o cargo</a>
+              </div>`
+            : ""}
 
           <div class="meta">
             ${svg("clock")}
@@ -533,7 +559,11 @@ async function load() {
     if (!res.ok) throw new Error("API indisponível");
 
     const data = await res.json();
-    records = Array.isArray(data.activities) ? data.activities : [];
+    records = Array.isArray(data.activities)
+      ? data.activities
+      : Array.isArray(data.atividades)
+        ? data.atividades
+        : [];
 
     $("status").textContent = "Conectado · dados do servidor";
   } catch (e) {
