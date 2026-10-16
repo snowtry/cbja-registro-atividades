@@ -3,76 +3,555 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#171923">
+  <meta name="theme-color" content="#123d2b">
   <title>CBJA | Registro de Atividades</title>
+
   <style>
-    :root{color-scheme:dark;--bg:#11131b;--panel:#191c28;--panel2:#222637;--line:#30364a;--text:#f3f5ff;--muted:#aab1c5;--accent:#8797ff}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
-    header{padding:28px max(20px,calc((100% - 1080px)/2));background:linear-gradient(120deg,#20263b,#171923);border-bottom:1px solid var(--line)}
-    .brand{display:flex;gap:14px;align-items:center}.logo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#343d62;font-size:24px}
-    h1{font-size:clamp(22px,4vw,30px);margin:0}header p{margin:4px 0 0;color:var(--muted)}
-    main{max-width:1080px;margin:24px auto;padding:0 18px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}.stat-label{color:var(--muted);font-size:13px}.stat-value{font-size:26px;font-weight:750;margin-top:3px}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 14px}.toolbar input,.toolbar select{background:var(--panel);color:var(--text);border:1px solid var(--line);padding:12px 13px;border-radius:10px;min-width:160px;flex:1}
-    .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 12px}.section-head h2{font-size:19px;margin:0}
-    #status{color:var(--muted);font-size:13px}.activity{display:grid;grid-template-columns:42px 1fr;gap:13px;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
-    .activity-icon{width:42px;height:42px;border-radius:12px;background:#29304a;display:grid;place-items:center;font-size:19px}
-    .activity h3{font-size:15px;margin:0 0 5px}.meta{color:var(--muted);font-size:13px}.details{display:flex;gap:8px 16px;flex-wrap:wrap;margin-top:8px;font-size:13px}
-    .tag{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 9px;color:#d7dcf1;font-size:12px}
-    .empty{padding:32px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:14px}
-    footer{max-width:1080px;margin:28px auto;padding:0 18px 30px;color:var(--muted);font-size:12px}
-    @media(max-width:600px){.stats{grid-template-columns:1fr}.stat-value{font-size:23px}.section-head{align-items:flex-start;flex-direction:column}}
+    :root {
+      color-scheme: dark;
+      --bg: #091a12;
+      --panel: #10291d;
+      --panel2: #193b2a;
+      --line: #315a40;
+      --text: #f4f5ed;
+      --muted: #b0c3b5;
+      --gold: #d8b45a;
+      --gold-dark: #a9842e;
+      --green: #1c4a30;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at top, #183a28, var(--bg) 70%);
+      color: var(--text);
+      font: 15px/1.55 system-ui, -apple-system, Segoe UI, sans-serif;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    header {
+      padding: 26px max(20px, calc((100% - 1080px) / 2));
+      background: linear-gradient(120deg, #17452e, #0b2418);
+      border-bottom: 2px solid var(--gold-dark);
+      box-shadow: 0 8px 30px #0003;
+    }
+
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border: 1px solid var(--gold);
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #285a3b, #102d1e);
+      color: var(--gold);
+    }
+
+    .logo svg { width: 29px; height: 29px; }
+
+    h1 {
+      font-size: clamp(21px, 4vw, 29px);
+      margin: 0;
+      letter-spacing: .2px;
+    }
+
+    header p { margin: 4px 0 0; color: var(--muted); }
+
+    main {
+      max-width: 1080px;
+      margin: 26px auto;
+      padding: 0 18px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, var(--panel), #0c2419);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--gold-dark);
+      border-radius: 15px;
+      padding: 18px;
+      box-shadow: 0 5px 18px #0002;
+      transition: .2s;
+    }
+
+    .card:hover { border-color: var(--gold); transform: translateY(-2px); }
+
+    .stat-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat-label svg { color: var(--gold); width: 17px; height: 17px; }
+
+    .stat-value {
+      color: var(--gold);
+      font-size: 27px;
+      font-weight: 800;
+      margin-top: 5px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 24px 0 16px;
+    }
+
+    .toolbar input, .toolbar select {
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 12px 13px;
+      border-radius: 10px;
+      min-width: 160px;
+      flex: 1;
+      font: inherit;
+      outline: none;
+    }
+
+    .toolbar input:focus, .toolbar select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px #d8b45a20;
+    }
+
+    .toolbar input::placeholder { color: #9caf9f; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 22px 0 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .section-title svg { color: var(--gold); }
+    .section-head h2 { font-size: 19px; margin: 0; }
+
+    #status {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .activity {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 13px;
+      padding: 17px;
+      background: linear-gradient(120deg, var(--panel), #0c2419);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--gold-dark);
+      border-radius: 14px;
+      margin-bottom: 11px;
+      box-shadow: 0 4px 16px #0002;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .activity:hover {
+      border-color: var(--gold);
+      transform: translateX(2px);
+    }
+
+    .activity-icon {
+      width: 44px;
+      height: 44px;
+      border: 1px solid #b9913c66;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #28583b, #173b29);
+      color: var(--gold);
+      display: grid;
+      place-items: center;
+    }
+
+    .activity-icon svg { width: 22px; height: 22px; }
+
+    .activity h3 {
+      font-size: 15px;
+      margin: 0 0 5px;
+      overflow-wrap: anywhere;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .details {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 9px;
+      font-size: 12px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1a3a29;
+      border: 1px solid #456b49;
+      border-radius: 999px;
+      padding: 4px 10px;
+      color: #e9d69e;
+      overflow-wrap: anywhere;
+      max-width: 100%;
+    }
+
+    .tag svg { width: 14px; height: 14px; }
+
+    .note {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .note svg { width: 16px; height: 16px; color: var(--gold); }
+
+    .empty {
+      padding: 34px 20px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+    }
+
+    .empty svg {
+      display: block;
+      width: 30px;
+      height: 30px;
+      color: var(--gold);
+      margin: 0 auto 10px;
+    }
+
+    footer {
+      max-width: 1080px;
+      margin: 30px auto 0;
+      padding: 20px 18px 30px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      border-top: 1px solid var(--line);
+    }
+
+    footer strong { color: var(--gold); }
+
+    @media (max-width: 600px) {
+      header { padding: 22px 16px; }
+      main { margin: 20px auto; padding: 0 13px; }
+      .stats { grid-template-columns: 1fr; }
+      .stat-value { font-size: 24px; }
+      .section-head { align-items: flex-start; flex-direction: column; }
+      .toolbar input, .toolbar select { min-width: 100%; }
+      .activity {
+        padding: 13px;
+        gap: 10px;
+        grid-template-columns: 40px minmax(0, 1fr);
+      }
+      .activity-icon { width: 40px; height: 40px; }
+    }
   </style>
 </head>
+
 <body>
-<header><div class="brand"><div class="logo">🛡️</div><div><h1>CBJA — Registro de Atividades</h1><p>Histórico de atividades do servidor Discord</p></div></div></header>
+<header>
+  <div class="brand">
+    <div class="logo" aria-label="Símbolo institucional">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/>
+        <path d="m9 12 2 2 4-4"/>
+      </svg>
+    </div>
+    <div>
+      <h1>CBJA — Registro de Atividades</h1>
+      <p>Histórico oficial de atividades do servidor Discord</p>
+    </div>
+  </div>
+</header>
+
 <main>
   <section class="stats">
-    <div class="card"><div class="stat-label">Atividades exibidas</div><div class="stat-value" id="total">—</div></div>
-    <div class="card"><div class="stat-label">Promoções</div><div class="stat-value" id="promotions">—</div></div>
-    <div class="card"><div class="stat-label">Última atualização</div><div class="stat-value" style="font-size:16px" id="updated">Carregando…</div></div>
+    <div class="card">
+      <div class="stat-label">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 6h13M8 12h13M8 18h13"/>
+          <path d="M3 6h.01M3 12h.01M3 18h.01"/>
+        </svg>
+        Atividades exibidas
+      </div>
+      <div class="stat-value" id="total">—</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-label">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m3 17 6-6 4 4 8-8"/>
+          <path d="M15 7h6v6"/>
+        </svg>
+        Promoções
+      </div>
+      <div class="stat-value" id="promotions">—</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-label">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 7v5l3 2"/>
+        </svg>
+        Última atualização
+      </div>
+      <div class="stat-value" style="font-size:16px" id="updated">Carregando…</div>
+    </div>
   </section>
+
   <div class="toolbar">
     <input id="search" placeholder="Pesquisar membro ou responsável…" aria-label="Pesquisar">
-    <select id="type" aria-label="Filtrar por atividade"><option value="">Todas as atividades</option><option>Promoção</option><option>Exoneração</option><option>Advertência</option><option>Transferência</option><option>Outro</option></select>
-    <select id="channel" aria-label="Filtrar por canal"><option value="">Todos os canais</option></select>
+
+    <select id="type" aria-label="Filtrar por atividade">
+      <option value="">Todas as atividades</option>
+      <option>Promoção</option>
+      <option>Exoneração</option>
+      <option>Advertência</option>
+      <option>Transferência</option>
+      <option>Outro</option>
+    </select>
+
+    <select id="channel" aria-label="Filtrar por canal">
+      <option value="">Todos os canais</option>
+    </select>
   </div>
-  <div class="section-head"><h2>Histórico de registros</h2><span id="status">Conectando ao sistema…</span></div>
-  <section id="list"><div class="empty">Carregando registros…</div></section>
+
+  <div class="section-head">
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8 6h13M8 12h13M8 18h13"/>
+        <path d="M3 6h.01M3 12h.01M3 18h.01"/>
+      </svg>
+      <h2>Histórico de registros</h2>
+    </div>
+    <span id="status">Conectando ao sistema…</span>
+  </div>
+
+  <section id="list">
+    <div class="empty">Carregando registros…</div>
+  </section>
 </main>
-<footer>CBJA • Os registros são fornecidos pela integração do servidor Discord. Informações de demonstração não representam atividades reais.</footer>
+
+<footer>
+  <strong>CBJA</strong> • Os registros são fornecidos pela integração do servidor Discord.
+  Informações de demonstração não representam atividades reais.
+</footer>
+
 <script>
+const ICONS = {
+  shield: '<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>',
+  promotion: '<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  exon: '<path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="m17 8 5 5m0-5-5 5"/>',
+  warning: '<path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3.1l-8-14a2 2 0 0 0-3.4 0z"/><path d="M12 9v4m0 4h.01"/>',
+  transfer: '<path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>',
+  other: '<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  note: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',
+  calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'
+};
+
+function svg(name) {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ICONS.other}</svg>`;
+}
+
 const demo = [
- {id:"demo-1",type:"Promoção",member:"@Membro de exemplo",responsible:"@Administrador",oldRole:"Soldado",newRole:"Cabo",channel:"registros-de-promocao",createdAt:new Date().toISOString(),note:"Registro ilustrativo"},
- {id:"demo-2",type:"Transferência",member:"@Outro membro",responsible:"@Direção",oldRole:"Setor A",newRole:"Setor B",channel:"registros-gerais",createdAt:new Date(Date.now()-86400000).toISOString(),note:"Registro ilustrativo"}
+  {
+    id: "demo-1",
+    type: "Promoção",
+    member: "@Membro de exemplo",
+    responsible: "@Administrador",
+    oldRole: "Soldado",
+    newRole: "Cabo",
+    channel: "registros-de-promocao",
+    createdAt: new Date().toISOString(),
+    note: "Registro ilustrativo"
+  },
+  {
+    id: "demo-2",
+    type: "Transferência",
+    member: "@Outro membro",
+    responsible: "@Direção",
+    oldRole: "Setor A",
+    newRole: "Setor B",
+    channel: "registros-gerais",
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
+    note: "Registro ilustrativo"
+  }
 ];
-let records=[];
-const $=id=>document.getElementById(id);
-function date(v){const d=new Date(v);return isNaN(d)? "Data não informada":d.toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"});}
-function icon(type){return ({Promoção:"⬆️",Exoneração:"👤",Advertência:"⚠️",Transferência:"↔️",Outro:"📋"})[type]||"📋";}
-function render(){
- const term=$("search").value.toLocaleLowerCase("pt-BR"), type=$("type").value, channel=$("channel").value;
- const rows=records.filter(r=>(!type||r.type===type)&&(!channel||r.channel===channel)&&[r.member,r.responsible,r.type,r.oldRole,r.newRole,r.note].join(" ").toLocaleLowerCase("pt-BR").includes(term));
- $("total").textContent=rows.length;
- $("promotions").textContent=rows.filter(r=>r.type==="Promoção").length;
- $("updated").textContent=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
- const channels=[...new Set(records.map(r=>r.channel).filter(Boolean))].sort();
- const current=$("channel").value;
- $("channel").innerHTML='<option value="">Todos os canais</option>'+channels.map(c=>`<option value="${esc(c)}">${esc("#"+c)}</option>`).join("");
- $("channel").value=channels.includes(current)?current:"";
- $("list").innerHTML=rows.length?rows.map(r=>`<article class="activity"><div class="activity-icon">${icon(r.type)}</div><div><h3>${esc(r.type||"Atividade")} — ${esc(r.member||"Membro não informado")}</h3><div class="meta">${esc(date(r.createdAt))} · Responsável: ${esc(r.responsible||"Não informado")}</div><div class="details">${r.oldRole?`<span class="tag">Anterior: ${esc(r.oldRole)}</span>`:""}${r.newRole?`<span class="tag">Novo: ${esc(r.newRole)}</span>`:""}${r.channel?`<span class="tag">#${esc(r.channel)}</span>`:""}</div>${r.note?`<div class="meta" style="margin-top:8px">${esc(r.note)}</div>`:""}</div></article>`).join(""):'<div class="empty">Nenhum registro encontrado.</div>';
+
+let records = [];
+const $ = id => document.getElementById(id);
+
+function date(v) {
+  const d = new Date(v);
+  return isNaN(d)
+    ? "Data não informada"
+    : d.toLocaleString("pt-BR", {
+        dateStyle: "short",
+        timeStyle: "short"
+      });
 }
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-async function load(){
- try{
-  const res=await fetch("/api/activities");
-  if(!res.ok) throw new Error("API indisponível");
-  const data=await res.json(); records=Array.isArray(data.activities)?data.activities:[];
-  $("status").textContent="Conectado · dados do servidor";
- }catch(e){records=demo;$("status").textContent="Modo de demonstração · configure o Netlify para conectar";}
- render();
+
+function iconName(type) {
+  return ({
+    "Promoção": "promotion",
+    "Exoneração": "exon",
+    "Advertência": "warning",
+    "Transferência": "transfer",
+    "Outro": "other"
+  })[type] || "other";
 }
-["search","type","channel"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",render));
+
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[c]);
+}
+
+function render() {
+  const term = $("search").value.toLocaleLowerCase("pt-BR");
+  const type = $("type").value;
+  const channel = $("channel").value;
+
+  const rows = records.filter(r =>
+    (!type || r.type === type) &&
+    (!channel || r.channel === channel) &&
+    [
+      r.member, r.responsible, r.type,
+      r.oldRole, r.newRole, r.note, r.channel
+    ].join(" ").toLocaleLowerCase("pt-BR").includes(term)
+  );
+
+  $("total").textContent = rows.length;
+  $("promotions").textContent =
+    rows.filter(r => r.type === "Promoção").length;
+
+  $("updated").textContent = new Date().toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  const channels = [...new Set(
+    records.map(r => r.channel).filter(Boolean)
+  )].sort();
+
+  const current = $("channel").value;
+
+  $("channel").innerHTML =
+    '<option value="">Todos os canais</option>' +
+    channels.map(c =>
+      `<option value="${esc(c)}">${esc("#" + c)}</option>`
+    ).join("");
+
+  $("channel").value = channels.includes(current) ? current : "";
+
+  $("list").innerHTML = rows.length
+    ? rows.map(r => `
+      <article class="activity">
+        <div class="activity-icon">${svg(iconName(r.type))}</div>
+        <div>
+          <h3>${esc(r.type || "Atividade")} — ${esc(r.member || "Membro não informado")}</h3>
+
+          <div class="meta">
+            ${svg("clock")}
+            ${esc(date(r.createdAt))} · Responsável:
+            ${esc(r.responsible || "Não informado")}
+          </div>
+
+          <div class="details">
+            ${r.oldRole
+              ? `<span class="tag">${svg("user")}Anterior: ${esc(r.oldRole)}</span>`
+              : ""}
+            ${r.newRole
+              ? `<span class="tag">${svg("promotion")}Novo: ${esc(r.newRole)}</span>`
+              : ""}
+            ${r.channel
+              ? `<span class="tag">${svg("note")}#${esc(r.channel)}</span>`
+              : ""}
+          </div>
+
+          ${r.note
+            ? `<div class="note">${svg("note")}<span>${esc(r.note)}</span></div>`
+            : ""}
+        </div>
+      </article>
+    `).join("")
+    : `<div class="empty">${svg("calendar")}Nenhum registro encontrado.</div>`;
+}
+
+async function load() {
+  try {
+    const res = await fetch("/api/activities");
+    if (!res.ok) throw new Error("API indisponível");
+
+    const data = await res.json();
+    records = Array.isArray(data.activities) ? data.activities : [];
+
+    $("status").textContent = "Conectado · dados do servidor";
+  } catch (e) {
+    records = demo;
+    $("status").textContent =
+      "Modo de demonstração · configure o Netlify para conectar";
+  }
+
+  render();
+}
+
+["search", "type", "channel"].forEach(id =>
+  $(id).addEventListener(
+    id === "search" ? "input" : "change",
+    render
+  )
+);
+
 load();
 </script>
 </body>
