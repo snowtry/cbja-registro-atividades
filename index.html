@@ -1,30 +1,31 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#123d2b">
+  <meta name="theme-color" content="#080808">
   <title>CBJA | Registro de Atividades</title>
 
   <style>
     :root {
       color-scheme: dark;
-      --bg: #091a12;
-      --panel: #10291d;
-      --panel2: #193b2a;
-      --line: #315a40;
-      --text: #f4f5ed;
-      --muted: #b0c3b5;
-      --gold: #d8b45a;
-      --gold-dark: #a9842e;
-      --green: #1c4a30;
+      --bg: #080808;
+      --panel: #121212;
+      --panel2: #1b1b1b;
+      --line: #49391a;
+      --text: #f5f0e5;
+      --muted: #bdb5a4;
+      --gold: #e8c15b;
+      --gold-dark: #a77b19;
+      --green: #17130b;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background: radial-gradient(ellipse at top, #183a28, var(--bg) 70%);
+      background: radial-gradient(ellipse at top, #282016, var(--bg) 70%);
       color: var(--text);
       font: 15px/1.55 system-ui, -apple-system, Segoe UI, sans-serif;
     }
@@ -42,9 +43,9 @@
 
     header {
       padding: 26px max(20px, calc((100% - 1080px) / 2));
-      background: linear-gradient(120deg, #17452e, #0b2418);
+      background: linear-gradient(120deg, #211a0d, #080808);
       border-bottom: 2px solid var(--gold-dark);
-      box-shadow: 0 8px 30px #0003;
+      box-shadow: 0 8px 30px #0008;
     }
 
     .brand {
@@ -54,14 +55,17 @@
     }
 
     .logo {
-      width: 52px;
-      height: 52px;
+      width: 64px;
+      height: 64px;
       border: 1px solid var(--gold);
-      border-radius: 14px;
+      border-radius: 50%;
       display: grid;
       place-items: center;
-      background: linear-gradient(145deg, #285a3b, #102d1e);
+      background: linear-gradient(145deg, #211a0d, #080808);
       color: var(--gold);
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 0 15px #d8ad3630;
     }
 
     .logo svg { width: 29px; height: 29px; }
@@ -87,16 +91,19 @@
     }
 
     .card {
-      background: linear-gradient(145deg, var(--panel), #0c2419);
+      background: linear-gradient(145deg, var(--panel), #0a0a0a);
       border: 1px solid var(--line);
       border-top: 2px solid var(--gold-dark);
       border-radius: 15px;
       padding: 18px;
-      box-shadow: 0 5px 18px #0002;
+      box-shadow: 0 5px 18px #0005;
       transition: .2s;
     }
 
-    .card:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
 
     .stat-label {
       display: flex;
@@ -106,7 +113,11 @@
       font-size: 13px;
     }
 
-    .stat-label svg { color: var(--gold); width: 17px; height: 17px; }
+    .stat-label svg {
+      color: var(--gold);
+      width: 17px;
+      height: 17px;
+    }
 
     .stat-value {
       color: var(--gold);
@@ -123,7 +134,7 @@
     }
 
     .toolbar input, .toolbar select {
-      background: var(--panel);
+      background: #111;
       color: var(--text);
       border: 1px solid var(--line);
       padding: 12px 13px;
@@ -139,7 +150,7 @@
       box-shadow: 0 0 0 3px #d8b45a20;
     }
 
-    .toolbar input::placeholder { color: #9caf9f; }
+    .toolbar input::placeholder { color: #999080; }
 
     .section-head {
       display: flex;
@@ -170,12 +181,12 @@
       grid-template-columns: 44px minmax(0, 1fr);
       gap: 13px;
       padding: 17px;
-      background: linear-gradient(120deg, var(--panel), #0c2419);
+      background: linear-gradient(120deg, #17140e, #0b0b0b);
       border: 1px solid var(--line);
       border-left: 3px solid var(--gold-dark);
       border-radius: 14px;
       margin-bottom: 11px;
-      box-shadow: 0 4px 16px #0002;
+      box-shadow: 0 4px 16px #0005;
       transition: border-color .2s, transform .2s;
     }
 
@@ -189,7 +200,7 @@
       height: 44px;
       border: 1px solid #b9913c66;
       border-radius: 12px;
-      background: linear-gradient(145deg, #28583b, #173b29);
+      background: linear-gradient(145deg, #302515, #100e09);
       color: var(--gold);
       display: grid;
       place-items: center;
@@ -210,9 +221,7 @@
       font-weight: 600;
     }
 
-    .profile-link:hover {
-      text-decoration: underline;
-    }
+    .profile-link:hover { text-decoration: underline; }
 
     .meta {
       color: var(--muted);
@@ -232,11 +241,11 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #1a3a29;
-      border: 1px solid #456b49;
+      background: #201a0e;
+      border: 1px solid #655027;
       border-radius: 999px;
       padding: 4px 10px;
-      color: #e9d69e;
+      color: #f0d99a;
       overflow-wrap: anywhere;
       max-width: 100%;
     }
@@ -253,7 +262,11 @@
       overflow-wrap: anywhere;
     }
 
-    .note svg { width: 16px; height: 16px; color: var(--gold); }
+    .note svg {
+      width: 16px;
+      height: 16px;
+      color: var(--gold);
+    }
 
     .empty {
       padding: 34px 20px;
@@ -289,7 +302,12 @@
       main { margin: 20px auto; padding: 0 13px; }
       .stats { grid-template-columns: 1fr; }
       .stat-value { font-size: 24px; }
-      .section-head { align-items: flex-start; flex-direction: column; }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
       .toolbar input, .toolbar select { min-width: 100%; }
 
       .activity {
